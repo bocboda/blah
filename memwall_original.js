@@ -1,4 +1,4 @@
-var pup = document.getElementById("popup");
+var pup = $("#popup");
 var wallArray = new Array();
 	var tempX = 0;
 	var tempY = 0;
@@ -12,9 +12,8 @@ var wallArray = new Array();
 
 	    if (tempX < 0){tempX = 0;}
 	    if (tempY < 0){tempY = 0;}  
-		//window.alert(tempX);
-	   pup.style.left=tempX+boxLeft-document.documentElement.scrollLeft+'px';
-	   pup.style.top=tempY+boxTop-document.documentElement.scrollTop+'px';
+	   $(pup).css("left", tempX+boxLeft-document.documentElement.scrollLeft+'px');
+	   $(pup).css("top", tempY+boxTop-document.documentElement.scrollTop+'px');
 
     return true;
   }
@@ -26,12 +25,12 @@ document.onmousemove=getMouseXY;
 
 function writeWall()
 {
-	document.write("<center><table align='center' cellpadding=0 cellspacing=0>");
+	document.write("<center>");
 	for(i=1;i<wallArray.length;i++)
 	{
 		if (wallArray[i]!=null)
 		{
-		document.write("<tr>");
+		document.write("<table align='center'><tr>");
 		for(j=1;j<wallArray[i].length;j++)
 		{
 			if(wallArray[i][j]!=null)
@@ -39,10 +38,32 @@ function writeWall()
 				document.write(wallArray[i][j]);		
 			}
 		}
-		document.write("</tr>");
+		document.write("</tr></table>");
 		}
 	}
-	document.write("</table></center>");
+	document.write("</center>");
+	
+	$(".memwall img").mouseover(onMouseOver);
+	$(".memwall img").mouseout(onMouseOut);
+}
+var test = null;
+function onMouseOver() {
+        test = this;
+   	var pname = $(this).data("pname");
+	var txtVal = $(this).data("txtval");
+	var colcode = $(this).data("colcode");
+	var fcolcode = $(this).data("fcolcode");
+	$(pup).show();
+	$(pup).css("background-color", "#"+colcode);
+	$(pup).find(".extText, .p-name").css("color", "#"+fcolcode);
+	$(pup).find(".p-name").text(pname);
+	$(pup).find(".extText").text(txtVal);
+}
+
+function onMouseOut() {
+	$(pup).hide();
+	$(pup).find(".p-name").text("");
+	$(pup).find(".extText").text("");
 }
 
 function wall(rowpos,colpos,imgurl,link,pname,txtval,colcode,fcolcode)
@@ -52,13 +73,6 @@ function wall(rowpos,colpos,imgurl,link,pname,txtval,colcode,fcolcode)
 		wallArray[rowpos] = new Array();
 	}
 	
-	if (imgurl != '')
-	{
-		wallArray[rowpos][colpos]= "<td><a href='"+link+"' class='memwall'><img src='" + imgurl + "' width='"+imageWidth+"px' height='"+imageHeight+"px' border='0' id='hunter_img' onmouseover='pup.style.display=&quot;&quot;;pup.innerHTML=&quot;<b>"+pname+"</b><br>"+ txtval + "&quot;;pup.style.backgroundColor=&quot;#"+colcode+"&quot;;pup.style.color=&quot;#"+fcolcode+"&quot;;' onmouseout='pup.style.display=&quot;none&quot;;pup.innerHTML=&quot;&quot;;'></a></td>";
-	}
-	else
-	{	
-		wallArray[rowpos][colpos]= "<td></td>";
-	}
+	wallArray[rowpos][colpos]= "<td><a href='"+link+"' class='memwall'><img src='" + imgurl + "' width='"+imageWidth+"px' height='"+imageHeight+"px' border='0' id='hunter_img' data-pname='" + pname + "' data-txtval='" + txtval + "' data-colcode='" + colcode + "' data-fcolcode='" + fcolcode + "'></a></td>";
 	
 }
